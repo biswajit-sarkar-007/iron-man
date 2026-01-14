@@ -11,10 +11,22 @@ const ScrollScene = () => {
     const [images, setImages] = useState<HTMLImageElement[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
 
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"]
     });
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            setMousePos({
+                x: (e.clientX / window.innerWidth - 0.5) * 20,
+                y: (e.clientY / window.innerHeight - 0.5) * 20,
+            });
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
 
     const frameIndex = useTransform(scrollYProgress, [0, 1], [0, TOTAL_FRAMES - 1]);
 
@@ -56,7 +68,7 @@ const ScrollScene = () => {
             const imageWidth = image.naturalWidth;
             const imageHeight = image.naturalHeight;
 
-            const ratio = Math.max(canvasWidth / imageWidth, canvasHeight / imageHeight);
+            const ratio = Math.max(canvasWidth / imageWidth, canvasHeight / imageHeight) * 0.8;
             const newWidth = imageWidth * ratio;
             const newHeight = imageHeight * ratio;
             const x = (canvasWidth - newWidth) / 2;
@@ -98,8 +110,9 @@ const ScrollScene = () => {
                     </div>
                 )}
                 
-                <canvas 
+                <motion.canvas 
                     ref={canvasRef}
+                    style={{ x: mousePos.x, y: mousePos.y }}
                     className="w-full h-full object-cover"
                 />
 
@@ -110,10 +123,10 @@ const ScrollScene = () => {
                         range={[0, 0.08, 0.15]} 
                         className="flex flex-col items-center justify-center text-center px-6"
                     >
-                        <h1 className="text-6xl md:text-8xl font-bold tracking-tighter mb-4 text-white/90">
-                            IRON MAN <span className="text-arc-blue">EXOSUIT</span>
+                        <h1 className="text-6xl md:text-8xl font-bold tracking-tighter mb-4 text-white/90 font-orbitron">
+                            IRON MAN <span className="text-iron-red">EXOSUIT</span>
                         </h1>
-                        <p className="text-sm md:text-base tracking-[.4em] uppercase text-white/50">
+                        <p className="text-sm md:text-base tracking-[0.4em] uppercase text-white/50 font-mono">
                             Engineered for the impossible.
                         </p>
                     </TextSection>
@@ -121,37 +134,41 @@ const ScrollScene = () => {
                     <TextSection 
                         progress={scrollYProgress} 
                         range={[0.2, 0.3, 0.4]} 
-                        className="flex flex-col justify-center h-full max-w-2xl px-12 md:px-24"
+                        className="flex flex-col justify-center h-full w-full px-12 md:px-[20vw]"
                     >
-                        <h2 className="text-4xl md:text-6xl font-bold mb-6 text-white/90 leading-tight">
-                            Precision-engineered <br/>armor
-                        </h2>
-                        <p className="text-lg text-white/60 leading-relaxed max-w-md">
-                            Layered nano-alloy plating designed for impact resistance, mobility, and heat dissipation.
-                        </p>
+                        <div className="max-w-md p-8 border-l border-iron-red/30 bg-iron-red/5 relative group">
+                            <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-iron-red"></div>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white/90 leading-tight font-orbitron">
+                                Precision-engineered <br/><span className="text-iron-red">Armor</span>
+                            </h2>
+                            <p className="text-lg text-white/60 leading-relaxed font-mono">
+                                Layered nano-alloy plating designed for impact resistance, mobility, and heat dissipation.
+                            </p>
+                        </div>
                     </TextSection>
 
                     <TextSection 
                         progress={scrollYProgress} 
                         range={[0.45, 0.55, 0.65]} 
-                        className="flex flex-col justify-center items-end h-full w-full px-12 md:px-24 text-right"
+                        className="flex flex-col justify-center items-end h-full w-full px-12 md:px-[20vw] text-right"
                     >
-                        <div className="max-w-md">
-                            <h2 className="text-4xl md:text-6xl font-bold mb-6 text-white/90 leading-tight">
-                                Powered from <br/>the core
+                        <div className="max-w-md p-8 border-r border-iron-red/30 bg-iron-red/5 relative">
+                            <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-iron-red"></div>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white/90 leading-tight font-orbitron">
+                                Powered from <br/><span className="text-iron-red">The Core</span>
                             </h2>
-                            <ul className="space-y-6 text-base tracking-widest text-white/60">
+                            <ul className="space-y-6 text-base tracking-widest text-white/60 font-mono">
                                 <li className="flex items-center justify-end space-x-4">
-                                    <span>High-density energy reactor</span>
+                                    <span className="text-xs">High-density energy reactor</span>
                                     <div className="w-2 h-2 rounded-full bg-arc-blue shadow-[0_0_10px_rgba(0,214,255,0.8)]"></div>
                                 </li>
                                 <li className="flex items-center justify-end space-x-4">
-                                    <span>Distributed power routing</span>
-                                    <div className="w-2 h-2 rounded-full bg-arc-blue"></div>
+                                    <span className="text-xs">Distributed power routing</span>
+                                    <div className="w-2 h-2 rounded-full bg-iron-red shadow-[0_0_10px_rgba(215,25,32,0.8)]"></div>
                                 </li>
                                 <li className="flex items-center justify-end space-x-4">
-                                    <span>Real-time system stabilization</span>
-                                    <div className="w-2 h-2 rounded-full bg-arc-blue"></div>
+                                    <span className="text-xs">Real-time system stabilization</span>
+                                    <div className="w-2 h-2 rounded-full bg-iron-gold shadow-[0_0_10px_rgba(255,215,0,0.8)]"></div>
                                 </li>
                             </ul>
                         </div>
@@ -160,14 +177,17 @@ const ScrollScene = () => {
                     <TextSection 
                         progress={scrollYProgress} 
                         range={[0.7, 0.77, 0.85]} 
-                        className="flex flex-col justify-center h-full max-w-3xl px-12 md:px-24"
+                        className="flex flex-col justify-center h-full w-full px-12 md:px-[20vw]"
                     >
-                        <h2 className="text-4xl md:text-6xl font-bold mb-6 text-white/90 leading-tight">
-                            Every component. <br/>Purpose-built.
-                        </h2>
-                        <p className="text-lg text-white/60 leading-relaxed max-w-md">
-                            From micro-actuators to structural frame, every element exists to serve strength, speed, and survival.
-                        </p>
+                        <div className="max-w-md p-8 border-l border-iron-red/30 bg-iron-red/5 relative">
+                            <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-iron-red"></div>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white/90 leading-tight font-orbitron">
+                                Every component. <br/>Purpose-built.
+                            </h2>
+                            <p className="text-lg text-white/60 leading-relaxed font-mono">
+                                From micro-actuators to structural frame, every element exists to serve strength, speed, and survival.
+                            </p>
+                        </div>
                     </TextSection>
 
                     <TextSection 
@@ -175,14 +195,14 @@ const ScrollScene = () => {
                         range={[0.9, 0.95, 1]} 
                         className="flex flex-col items-center justify-center text-center px-6"
                     >
-                        <h2 className="text-4xl md:text-7xl font-bold mb-10 text-white/90 leading-tight">
-                            Designed to protect. <br/>Built to endure.
+                        <h2 className="text-4xl md:text-7xl font-bold mb-10 text-white/90 leading-tight font-orbitron">
+                            Designed to Protect. <br/><span className="text-iron-red">Built to Endure.</span>
                         </h2>
                         <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pointer-events-auto">
-                            <button className="px-10 py-5 bg-white text-black text-[10px] font-bold uppercase tracking-[.2em] rounded-sm hover:bg-arc-blue hover:text-white transition-all duration-300">
+                            <button className="px-10 py-5 bg-iron-red text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-sm hover:bg-iron-gold hover:text-black transition-all duration-300 font-orbitron">
                                 Explore Full Specifications
                             </button>
-                            <button className="px-10 py-5 border border-white/20 text-[10px] font-bold uppercase tracking-[.2em] rounded-sm hover:bg-white/5 transition-all duration-300">
+                            <button className="px-10 py-5 border border-white/20 text-[10px] font-bold uppercase tracking-[0.2em] rounded-sm hover:bg-white/5 transition-all duration-300 font-orbitron text-white/70">
                                 View Engineering Breakdown
                             </button>
                         </div>

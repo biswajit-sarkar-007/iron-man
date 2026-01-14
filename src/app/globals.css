@@ -1,4 +1,5 @@
 @import "tailwindcss";
+/* @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Roboto+Mono:wght@100;200;300;400;500;600;700&display=swap'); */
 
 :root {
   --background: #050505;
@@ -6,7 +7,10 @@
   --secondary: #0A0A0C;
   --arc-blue: #00D6FF;
   --energy-cyan: #3BE9FF;
+  --iron-red: #D71920;
+  --iron-gold: #FFD700;
   --subtle-red: #C1121F;
+  --hud-line: rgba(215, 25, 32, 0.15);
 }
 
 @theme inline {
@@ -15,7 +19,12 @@
   --color-secondary: var(--secondary);
   --color-arc-blue: var(--arc-blue);
   --color-energy-cyan: var(--energy-cyan);
+  --color-iron-red: var(--iron-red);
+  --color-iron-gold: var(--iron-gold);
   --color-subtle-red: var(--subtle-red);
+  --font-orbitron: "Orbitron", sans-serif;
+  --font-mono: "Roboto Mono", monospace;
+  --animate-glitch: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
 }
 
 * {
@@ -51,4 +60,59 @@ h1, h2, h3 {
 
 p {
   line-height: 1.6;
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+
+@keyframes noise {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -5%); }
+  20% { transform: translate(-10%, 5%); }
+  30% { transform: translate(5%, -10%); }
+  40% { transform: translate(-5%, 15%); }
+  50% { transform: translate(-10%, 5%); }
+  60% { transform: translate(15%, 0); }
+  70% { transform: translate(0, 10%); }
+  80% { transform: translate(-15%, 0); }
+  90% { transform: translate(10%, 5%); }
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+.animate-scan {
+  animation: scan 3s linear infinite;
+}
+
+.hud-grid {
+  background-size: 50px 50px;
+  background-image: 
+    linear-gradient(to right, var(--hud-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hud-line) 1px, transparent 1px);
+}
+
+.noise-bg {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  width: 200%;
+  height: 200%;
+  background: transparent url('http://assets.iceable.com/img/noise-transparent.png') repeat 0 0;
+  background-repeat: repeat;
+  animation: noise .2s infinite;
+  opacity: .05;
+  visibility: visible;
+  z-index: 1;
+  pointer-events: none;
 }
